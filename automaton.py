@@ -2,7 +2,13 @@ class Automaton:
     def __init__(self, config_file):
         self.config_file = config_file
 
-        automaton = {"sigma": [], "states": [], "transitions": []}
+        automaton = {
+            "sigma": [],
+            "states": [],
+            "transitions": [],
+            "start_state": "",
+            "final_states": [],
+        }
         # create a dictionary containing sigma, states and transitions
         with open(self.config_file) as f:
             while (
@@ -26,16 +32,15 @@ class Automaton:
             tuple([s.strip() for s in state.split(",")])
             for state in automaton["states"]
         ]
-        # refactor transitions from strings to tuples of the form (initial_state:{letter: next_state})
-        refactored_transitions = {}
-        for transition in automaton["transitions"]:
-            transition_components = [item.strip() for item in transition.split(", ")]
-            initial_state, letter, next_state = transition_components
-            try:
-                refactored_transitions[initial_state][letter] = next_state
-            except KeyError:
-                refactored_transitions[initial_state] = {letter: next_state}
-        automaton["transitions"] = refactored_transitions
+
+        # get the start and final states
+        for state in automaton["states"]:
+            if len(state) > 1:
+                state_name = state[0]
+                if "S" in state:
+                    automaton["start_state"] = state_name
+                if "F" in state:
+                    automaton["final_states"].append(state_name)
 
         self.automaton = automaton
 

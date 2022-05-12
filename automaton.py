@@ -19,6 +19,8 @@ class Automaton:
                 line = f.readline().strip()
                 section = line.lower().split(":", maxsplit=1)[0].strip()
                 # ignore comments
+                if len(line) == 0:
+                    continue
                 if line[0] == "#":
                     continue
                 # check if a section follows
